@@ -1,4 +1,5 @@
 <template>
+<div>
 <modal name="login" transition="pop-out" :width="modalWidth" :height="400">
   <div class="box">
     <div class="box-part" id="bp-left">
@@ -11,41 +12,93 @@
               <input type="password">
             </div>
 
-            <input id="n-username" type="text" placeholder="Username">
-            <input id="n-password2" type="password" placeholder="Password">
+            <input v-model="formData.name" id="n-username" type="text" placeholder="Username">
+            <input v-model="formData.password" id="n-password2" type="password" placeholder="Password">
+            <p class="small-p" v-if="this.$store.getters.status === 'error'">Логин или пароль введен неверно<br>Повторите попытку</p>
+            <p class="small-p" v-else-if="this.$store.getters.status === 'succes'"></p>
           </form>
 
           <div style="margin-top: 15px">
           </div>
 
           <div class="button-set">
-            <button id="goto-signin-btn">Sign In</button>
-            <button id="register-btn">Register</button>
+            <button id="goto-signin-btn" type="submit" @click="this.login">Sign In</button>
+            <button id="register-btn" type="submit" @click="this.register">Register</button>
           </div>
 
         </div>
       </div>
     </div>
   </div>
+  <RegistrationModal/>
 </modal>
+</div>
 </template>
 <script>
+import RegistrationModal from '@/components/RegistrationModal.vue'
 const MODAL_WIDTH = 656
+const initFromData = { name: '', password: '', email: '' }
 export default {
   name: 'Auth',
+  components: { RegistrationModal },
   data () {
     return {
-      modalWidth: MODAL_WIDTH
+      modalWidth: MODAL_WIDTH,
+      formData: Object.assign({}, initFromData),
+      name: '',
+      password: '',
+      is_admin: null,
+      authenticate: true
+    }
+  },
+  props: {
+    authenticated: {
+      type: Boolean,
+      default: false
+    }
+  },
+  methods: {
+    login () {
+      let identifier = this.formData.name
+      let password = this.formData.password
+      this.$store.dispatch('login', { identifier, password })
+        .then(() => this.$router.push('/auth'))
+        .then(() => this.$modal.hide('login'), (d) => console.log(d), this.formData.name = '', this.formData.password = '')
+        .catch(err => console.log(err))
+    },
+    register () {
+      let data = {
+        username: this.formData.name,
+        email: this.formData.name + '@gmail.com',
+        password: this.formData.password
+      }
+      this.$store.dispatch('register', data)
+        .then(() => this.$router.push('/auth'))
+        .then(() => this.$modal.show('example-adaptive'), (d) => console.log(d), this.formData.name = '', this.formData.password = '')
+        .catch(err => console.log(err))
+    },
+    resetForm () {
+      this.formData.name = ''
     }
   },
   created () {
     this.modalWidth = window.innerWidth < MODAL_WIDTH
       ? MODAL_WIDTH / 2
       : MODAL_WIDTH
+    // console.log(this.formData)
+    // console.log(this.authenticate)
   }
 }
 </script>
 <style lang="scss">
+.small-p {
+  font-size: 10px;
+  color: red;
+  padding-left: 2px;
+  font-weight: 700;
+  margin-bottom: 0;
+}
+
 $background_color: #404142;
 $github_color: #DBA226;
 $facebook_color: #3880FF;

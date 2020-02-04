@@ -9,6 +9,7 @@
 // @ is an alias to /src
 import Header from '@/components/Header.vue'
 import CardForPost from '@/components/CardForPost.vue'
+
 // import Posts from '@/components/Posts.vue'
 
 export default {

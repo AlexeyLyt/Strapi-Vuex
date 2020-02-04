@@ -37,8 +37,9 @@ export default {
       // this.$router.push({ query: { id: this.posts.id } }).catch(err => {console.log(err)})
       // this.$route.query.id
     },
-    axiosStrapi () {
-      this.$axios.get(`http://localhost:1337/posts`)
+    
+    axiosStrapiLogged () {
+      this.$axios({ url: 'http://localhost:1337/posts', headers: { Authorization: `Bearer ${this.$store.getters.token}`, }, method: 'GET' })
       .then( response => {
       // console.log(response.data);
       // this.posts = response.data
@@ -52,9 +53,20 @@ export default {
       // this.posts = this.$store.getters.posts
       
     },
+    axiosStrapiPublic () {
+      this.$axios.get('http://localhost:1337/posts')
+      .then( response => {
+      this.$store.dispatch('SET_NAME', response.data);
+      this.posts = this.$store.getters.posts
+      })
+    }
   },
   created() {
-    this.axiosStrapi();
+    if (this.$store.getters.isLoggedIn === true) {
+      this.axiosStrapiLogged();
+    } else {
+      this.axiosStrapiPublic();
+    }
   }
 };
 </script>>

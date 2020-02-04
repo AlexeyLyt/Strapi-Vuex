@@ -20,6 +20,11 @@ moment.locale('ru')
 
 Vue.prototype.$axios = axios
 
+const token = localStorage.getItem('token')
+if (token) {
+  Vue.prototype.$axios.defaults.headers.common['Authorization'] = token
+}
+
 Vue.config.productionTip = false
 
 new Vue({

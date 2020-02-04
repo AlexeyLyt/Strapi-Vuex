@@ -13,14 +13,21 @@
           <b-button size="sm" class="my-2 my-sm-0" type="submit"><b-icon icon="search"></b-icon>Search</b-button>
         </b-nav-form>
 
-        <button
-            class="btn green"
-            @click="$modal.show('login')">
-            <b-icon icon="person-fill"></b-icon>
-            Login
+        <button v-if="isLoggedIn" class="btn green" @click="logout">
+          <b-icon icon="x-octagon-fill"></b-icon>
+          Logout
         </button>
 
-        <Auth/> <!-- Модальное окно -->
+        <button
+          v-else
+          class="btn green"
+          @click="$modal.show('login')"
+        >
+          <b-icon icon="person-fill"></b-icon>
+          Login
+        </button>
+
+        <Auth :authenticated="authenticated"/> <!-- Модальное окно -->
 
       </b-navbar-nav>
     </b-collapse>
@@ -35,6 +42,19 @@ export default {
   components: { Auth },
   data () {
     return {
+      authenticated: false
+    }
+  },
+  computed: {
+    isLoggedIn () {
+      return this.$store.getters.isLoggedIn
+    }
+  },
+  methods: {
+    logout () {
+      this.$store.dispatch('logout').then(() => {
+        this.$router.push('/')
+      })
     }
   }
 }

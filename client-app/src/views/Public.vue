@@ -1,7 +1,7 @@
 <template>
   <div class="home">
-    <Header/>
-    <Posts/>
+    <Header />
+    <Posts />
   </div>
 </template>
 
@@ -13,7 +13,11 @@ import Posts from '@/components/Posts.vue'
 export default {
   name: 'home',
   components: {
-    Header, Posts
+    Header,
+    Posts
+  },
+  created () {
+    // console.log(this.$store.getters.token)
   }
 }
 </script>

@@ -14,8 +14,12 @@
       "required": true
     },
     "post": {
-      "via": "comments",
-      "model": "post"
+      "model": "post",
+      "via": "comments"
+    },
+    "name": {
+      "type": "string",
+      "required": true
     }
   }
 }

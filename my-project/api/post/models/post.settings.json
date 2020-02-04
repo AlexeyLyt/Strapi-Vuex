@@ -30,8 +30,8 @@
       "required": false
     },
     "comments": {
-      "collection": "comment",
-      "via": "post"
+      "via": "post",
+      "collection": "comment"
     },
     "category": {
       "type": "string",
