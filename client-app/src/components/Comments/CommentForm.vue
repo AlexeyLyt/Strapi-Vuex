@@ -13,14 +13,6 @@
         placeholder="Your comment..."
         required
       ></textarea>
-      <input
-        v-model="data.name"
-        class="input-name"
-        type="text"
-        name="name"
-        placeholder="Your Name"
-        required
-      />
       <input :disabled="loading" type="submit" value="Comment" />
     </form>
   </div>
@@ -34,24 +26,30 @@ export default {
       data: {}
     }
   },
+  components: {},
   methods: {
     submit () {
       this.loading = true
-      // Save Comment
-      this.$http.post('http://localhost:3434', this.data).then(
-        response => {
+      let data = {
+        text: this.data.message,
+        post: { id: this.$route.params.id },
+        user: { id: this.$store.getters.userId }
+      }
+      this.$store.dispatch('comment', data)
+        .then(response => {
           // success callback
           // fire event for comment
+          // console.log(response.data)
           this.$emit('commented', response.data)
           // Clear the message
           this.data.message = ''
           this.loading = false
+          this.$modal.show('comment-modal')
         },
         response => {
           // error callback
           this.loading = false
-        }
-      )
+        })
     }
   }
 }

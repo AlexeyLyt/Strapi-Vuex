@@ -12,23 +12,32 @@
         </p>
       </div>
     </div>
-    <CommentForm v-on:commented="updateComment" />
+    <CommentForm v-if="this.$store.getters.isLoggedIn" v-on:commented="updateComment" />
+    <p v-else @click="$modal.show('login')" class="comment-notlogged">Зарегистрируйтесь или войдите для того, чтобы оставить комментарий</p>
     <div class="comment-list">
       <span v-show="loading" class="spinner"></span>
         <ul>
           <div v-if="this.noCommentsYet === true">Комментариев ещё нет</div>
-          <comment v-else v-for="(comment, index) in comments" v-bind:key="index" :comment="comment"></comment>
+          <comment v-else v-for="(comment, index) in comments" v-bind:key="index" :comment="comment" v-on:commented="updateComment"></comment>
         </ul>
     </div>
+    <CommentModal />
+    <CommentDeleteModal />
+    <CommentUpdateModal v-on:commented="updateComment" />
+    <CommentUpdateSucceed />
   </div>
 </template>
 
 <script>
 import CommentForm from '@/components/Comments/CommentForm.vue'
 import Comment from '@/components/Comments/Comment.vue'
+import CommentModal from '@/components/Modals/CommentModal.vue'
+import CommentDeleteModal from '@/components/Modals/CommentDeleteModal.vue'
+import CommentUpdateModal from '@/components/Modals/CommentUpdateModal.vue'
+import CommentUpdateSucceed from '@/components/Modals/CommentUpdateSucceed.vue'
 /*eslint-disable */
 export default {
-  components: {Comment,CommentForm},
+  components: { Comment, CommentForm, CommentModal, CommentDeleteModal, CommentUpdateModal, CommentUpdateSucceed },
   data() {
     return {
       post: {
@@ -79,6 +88,7 @@ export default {
           this.$store.dispatch('SET_NAME', response.data)
           this.post = this.$store.getters.getPostByID(this.postId);
           this.comments = this.post.comments
+      
           if (this.comments.length === 0) { // проверка на наличие комментариев
             this.noCommentsYet = true
           }else{
@@ -90,7 +100,8 @@ export default {
       });
     },
     updateComment (comment) {
-      this.comments.push(comment);
+      // this.comments.push(comment);
+      this.renderPostLogged()
     }
   },
   created () {
@@ -126,6 +137,13 @@ body {
     transition: all ease .6s;
   }
 
+.comment-notlogged {
+  margin-top: 35px;
+  color: #47b784;
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+}
 .brand h3{
     color: #47b784;
     font-size: 2em;

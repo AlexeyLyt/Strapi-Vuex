@@ -35,7 +35,7 @@
 </div>
 </template>
 <script>
-import RegistrationModal from '@/components/RegistrationModal.vue'
+import RegistrationModal from '@/components/Modals/RegistrationModal.vue'
 const MODAL_WIDTH = 656
 const initFromData = { name: '', password: '', email: '' }
 export default {

@@ -17,9 +17,10 @@
       "model": "post",
       "via": "comments"
     },
-    "name": {
-      "type": "string",
-      "required": true
+    "user": {
+      "plugin": "users-permissions",
+      "model": "user",
+      "via": "comments"
     }
   }
 }

@@ -2,6 +2,7 @@
   <div class="header">
        <b-navbar toggleable="lg" type="dark" variant="info">
     <b-navbar-brand to="/">News</b-navbar-brand>
+    <span v-if="this.$store.getters.isLoggedIn" class="user-iflogged">Hello, {{ this.$store.getters.userName }}</span>
 
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
@@ -26,12 +27,10 @@
           <b-icon icon="person-fill"></b-icon>
           Login
         </button>
-
-        <Auth :authenticated="authenticated"/> <!-- Модальное окно -->
-
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
+  <Auth :authenticated="authenticated"/> <!-- Модальное окно -->
   </div>
 </template>
 
@@ -56,11 +55,19 @@ export default {
         this.$router.push('/')
       })
     }
+  },
+  created () {
+    // console.log(this.$store.getters.user.username)
   }
 }
 </script>>
 
 <style scoped lang="scss">
+.user-iflogged {
+  color: white;
+  font-weight: bold;
+  text-decoration: underline;
+}
 button.btn {
   outline: none;
   background: white;
