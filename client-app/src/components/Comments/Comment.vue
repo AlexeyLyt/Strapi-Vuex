@@ -6,8 +6,12 @@
     <div class="msg">
       <div class="msg-body">
         <p class="name">
-          {{ this.name }}
-          <span class="date">{{ comment.created_at }}</span>
+          {{ upperCase }}
+          <span class="date">
+            <span>Создан: {{ moment(`${comment.created_at}`, ["YYYY", moment.ISO_8601]).format('LLL') }}</span><br>
+            <span v-if="moment(comment.created_at).format('LLL') === moment(comment.updated_at).format('LLL')"></span>
+            <span v-else>Изменен: {{ moment(`${comment.updated_at}`, ["YYYY", moment.ISO_8601]).format('LLL') }}</span>
+          </span>
         </p>
         <p class="comment-text" v-html="comment.text"></p>
         <span class="update-comment" v-if="Number(this.$store.getters.userId) === comment.user && this.$store.getters.isLoggedIn" @click="this.CommentUpdate">Изменить</span>
@@ -15,15 +19,12 @@
         <span v-else></span>
       </div>
     </div>
-    <!-- <CommentUpdateModal :com="this.comment.text"/> -->
   </li>
 </template>
 
 <script>
-// import CommentUpdateModal from '@/components/Modals/CommentUpdateModal.vue'
 export default {
   props: ['comment'],
-  // components: { CommentUpdateModal },
   data () {
     return {
       users: [],
@@ -42,6 +43,9 @@ export default {
           .replace(/[\s\W-]+/g, '-') +
         '@adorable.io.png'
       )
+    },
+    upperCase () {
+      return this.name.charAt(0).toUpperCase() + this.name.slice(1)
     }
   },
   methods: {
@@ -105,22 +109,6 @@ export default {
       console.log(this.$store.getters.commentId)
       // console.log(this.$store.getters.commentText)
       this.$modal.show('comment-update-modal')
-      // console.log(data)
-      // this.loading = true
-      // this.$store.dispatch('commentUpdate', data)
-      //   .then(response => {
-      //     // success callback
-      //     // fire event for comment
-      //     // console.log(response.data)
-      //     this.$emit('commented', response.data)
-      //     // Clear the message
-      //     this.loading = false
-      //     this.$modal.show('comment-update-modal')
-      //   },
-      //   response => {
-      //     // error callback
-      //     this.loading = false
-      //   })
     }
   },
   created () {
@@ -137,6 +125,9 @@ export default {
 .msg {
   border: 2px solid #00000047;
 }
+.date {
+  text-align: right;
+}
 .update-comment,
 .delete-comment {
   float: right;
@@ -150,5 +141,8 @@ export default {
 }
 .comment-text {
   margin-bottom: 0 !important;
+}
+.date-updated {
+  float: right;
 }
 </style>

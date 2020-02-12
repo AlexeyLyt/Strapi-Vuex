@@ -4,14 +4,13 @@
       transition="nice-modal-fade"
       :min-width="200"
       :min-height="200"
-      :delay="100"
-      :draggable="true">
+      :delay="100">
     <div class="example-modal-content">
       <textarea
         class="textarea-comment-update"
         placeholder="Your comment..."
         required
-        v-model="text"
+        v-model="$store.getters.comment.text"
       >
       </textarea>
       <button @click="this.updateComment" >Изменить</button>
@@ -32,30 +31,31 @@ export default {
       this.$modal.hide('comment-update-modal')
     },
     updateComment () {
+      let commentText = document.querySelector('.textarea-comment-update').value
       let data = {
-        text: this.text,
+        text: commentText,
         post: { id: this.$route.params.id },
         user: { id: this.$store.getters.userId }
         // commentId: this.comment.id
       }
-      console.log(data)
-      this.$store.dispatch('commentUpdate', data)
-        .then(response => {
+      // console.log(document.querySelector('.textarea-comment-update').value)
+      if (commentText === '') {
+        alert('Поле не может быть пустым')
+      } else {
+        this.$store.dispatch('commentUpdate', data)
+          .then(response => {
           // success callback
           // fire event for comment
-          // console.log(response.data)
-          this.$emit('commented', response.data)
-          this.$modal.show('comment-update-succeed')
-          // Clear the message
-          this.loading = false
-        },
-        response => {
-          // error callback
-          this.loading = false
-        })
-    },
-    d () {
-      console.log(1)
+            this.$emit('commented', response.data)
+            this.$modal.show('comment-update-succeed')
+            // Clear the message
+            this.loading = false
+          },
+          response => {
+            // error callback
+            this.loading = false
+          })
+      }
     }
   }
 }

@@ -16,7 +16,8 @@ export default new Vuex.Store({
     commentId: '',
     token: localStorage.getItem('token') || '',
     userId: localStorage.getItem('userId') || '',
-    userName: localStorage.getItem('userName') || ''
+    userName: localStorage.getItem('userName') || '',
+    isAdmin: localStorage.getItem('isAdmin') || ''
   },
   mutations: {
     // SET_NAME: (state, posts) => {
@@ -37,13 +38,16 @@ export default new Vuex.Store({
     auth_request (state) {
       state.status = 'loading'
     },
+    auth_admin: (state:any, payload) => {
+      state.isAdmin = payload
+    },
     auth_success: (state:any, payload) => {
       state.status = 'success'
       state.token = payload[0]
       state.user = payload[1]
       state.userId = payload[2]
       state.userName = payload[3]
-      console.log(state.status)
+      // console.log(state.status)
     },
     auth_error (state) {
       state.status = 'error'
@@ -52,10 +56,8 @@ export default new Vuex.Store({
     logout (state) {
       state.status = ''
       state.token = ''
+      state.isAdmin = ''
     }
-    // updatePosts (state, posts) {
-    //   state.posts = posts
-    // }
   },
   actions: {
     SET_NAME: async (state, posts) => {
@@ -79,7 +81,13 @@ export default new Vuex.Store({
             const user = resp.data.user
             const userId = resp.data.user.id
             const userName = resp.data.user.username
-            // console.log(resp.data)
+            if (resp.data.user.role.type === 'admin') {
+              let admin = resp.data.user.role.type
+              localStorage.setItem('isAdmin', admin)
+              commit('auth_admin', admin)
+            }
+            console.log(resp.data)
+            console.log(this.getters.isAdmin)
             localStorage.setItem('userName', userName)
             localStorage.setItem('userId', userId)
             localStorage.setItem('token', token)
@@ -89,6 +97,7 @@ export default new Vuex.Store({
           })
           .catch(err => {
             commit('auth_error')
+            localStorage.removeItem('isAdmin')
             localStorage.removeItem('userName')
             localStorage.removeItem('userId')
             localStorage.removeItem('token')
@@ -124,6 +133,7 @@ export default new Vuex.Store({
     logout ({ commit }) {
       return new Promise((resolve, reject) => {
         commit('logout')
+        localStorage.removeItem('isAdmin')
         localStorage.removeItem('userName')
         localStorage.removeItem('userId')
         localStorage.removeItem('token')
@@ -168,14 +178,6 @@ export default new Vuex.Store({
           })
       })
     }
-    // loadData ({
-    //   commit
-    // }) {
-    //   axios.get(`http://localhost:1337/posts`)
-    //     .then((response:any) => {
-    //       commit('updatePosts', response.data)
-    //     })
-    // }
   },
   modules: {
   },
@@ -191,6 +193,7 @@ export default new Vuex.Store({
     userName: state => state.userName,
     users: state => state.users,
     comment: state => state.comment,
-    commentId: state => state.commentId
+    commentId: state => state.commentId,
+    isAdmin: state => !!state.isAdmin
   }
 })

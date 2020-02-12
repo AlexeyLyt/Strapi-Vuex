@@ -101,7 +101,7 @@ export default {
 #comment {
   position: relative;
 }
-#comment .spinner {
+/* #comment .spinner {
   margin-top: 5em;
   z-index: 999;
 }
@@ -114,5 +114,5 @@ export default {
   left: 0;
   background-color: rgba(255, 255, 255, 0.8);
   z-index: 2;
-}
+} */
 </style>

@@ -8,7 +8,7 @@
           <h3 class="post-title">{{ post.name }}</h3>
           <p class="post-date"><b-icon icon="calendar-fill"></b-icon> {{ post.date }}</p>
           <p class="post-description">{{ post.description }}</p>
-          <b-button :to="{ name: 'post', params: { id: post.id } }" @click="viewDetailsClicked" class="post-btn">Read More</b-button>
+          <b-button :to="{ name: 'post', params: { id: post.id } }" class="post-btn">Read More</b-button>
           <b-button class="post-btn">Comments</b-button>
           <p class="post-author"><b-icon icon="award"></b-icon> By {{ post.author }}</p>
         </div>
@@ -26,18 +26,7 @@ export default {
       posts: [],
     };
   },
-  computed: {
-    // movies() {
-    //   console.log(this.$store.getters.posts)
-    // }
-  },
   methods: {
-    viewDetailsClicked () {
-      // this.$emit("viewDetails", 10);
-      // this.$router.push({ query: { id: this.posts.id } }).catch(err => {console.log(err)})
-      // this.$route.query.id
-    },
-    
     axiosStrapiLogged () {
       this.$axios({ url: 'http://localhost:1337/posts', headers: { Authorization: `Bearer ${this.$store.getters.token}`, }, method: 'GET' })
       .then( response => {

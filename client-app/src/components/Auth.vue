@@ -4,6 +4,9 @@
   <div class="box">
     <div class="box-part" id="bp-left">
       <div class="partition" id="partition-register">
+        <div class="loader" v-show="loading">
+          <span class="spinner"></span>
+        </div>
         <div class="partition-title">CREATE ACCOUNT</div>
         <div class="partition-form">
           <form autocomplete="false">
@@ -48,7 +51,8 @@ export default {
       name: '',
       password: '',
       is_admin: null,
-      authenticate: true
+      authenticate: true,
+      loading: false
     }
   },
   props: {
@@ -61,10 +65,22 @@ export default {
     login () {
       let identifier = this.formData.name
       let password = this.formData.password
+      this.loading = true
       this.$store.dispatch('login', { identifier, password })
-        .then(() => this.$router.push('/auth'))
-        .then(() => this.$modal.hide('login'), (d) => console.log(d), this.formData.name = '', this.formData.password = '')
-        .catch(err => console.log(err))
+        .then(() => {
+          // this.$router.push('/auth')
+          this.$modal.hide('login')
+          this.loading = false
+          this.formData.name = ''
+          this.formData.password = ''
+        })
+        // .then(() => this.$modal.hide('login'), (d) => console.log(d), this.formData.name = '', this.formData.password = '')
+        .catch(err => {
+          console.log(err)
+          this.loading = false
+          this.formData.name = ''
+          this.formData.password = ''
+        })
     },
     register () {
       let data = {
@@ -72,9 +88,19 @@ export default {
         email: this.formData.name + '@gmail.com',
         password: this.formData.password
       }
+      this.loading = true
       this.$store.dispatch('register', data)
-        .then(() => this.$router.push('/auth'))
-        .then(() => this.$modal.show('example-adaptive'), (d) => console.log(d), this.formData.name = '', this.formData.password = '')
+        .then(() => {
+          // this.$router.push('/auth')
+          this.$modal.show('example-adaptive')
+          this.loading = false
+        }, () => {
+          console.log(d)
+          this.formData.name = ''
+          this.formData.password = ''
+          this.loading = false
+        })
+        // .then(() => this.$modal.show('example-adaptive'), (d) => console.log(d), this.formData.name = '', this.formData.password = '')
         .catch(err => console.log(err))
     },
     resetForm () {
@@ -91,6 +117,53 @@ export default {
 }
 </script>
 <style lang="scss">
+// preloader
+  #partition-register .spinner {
+    width: 20px;
+    height: 20px;
+    background-color: #47b784;
+    display: inline-block;
+    -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
+    animation: sk-rotateplane 1.2s infinite ease-in-out;
+  }
+  #partition-register .spinner {
+  margin-top: 5em;
+  z-index: 999;
+}
+#partition-register .loader {
+  content: "";
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+  @-webkit-keyframes sk-rotateplane {
+    0% { -webkit-transform: perspective(120px) }
+    50% { -webkit-transform: perspective(120px) rotateY(180deg) }
+    100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
+  }
+  @keyframes sk-rotateplane {
+    0% {
+      transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+      background-color: #47b784;
+    } 50% {
+      transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+      -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+      background-color: #36495d;
+    } 100% {
+      transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+      background-color: #47b784;
+    }
+  }
+
 .small-p {
   font-size: 10px;
   color: red;
