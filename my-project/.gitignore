@@ -2,13 +2,13 @@
 # OS X
 ############################
 
-.DS_Store
-.AppleDouble
-.LSOverride
-Icon
-.Spotlight-V100
-.Trashes
-._*
+# .DS_Store
+# .AppleDouble
+# .LSOverride
+# Icon
+# .Spotlight-V100
+# .Trashes
+# ._*
 
 
 ############################
@@ -22,43 +22,43 @@ Icon
 # Windows
 ############################
 
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-*.cab
-*.msi
-*.msm
-*.msp
+# Thumbs.db
+# ehthumbs.db
+# Desktop.ini
+# $RECYCLE.BIN/
+# *.cab
+# *.msi
+# *.msm
+# *.msp
 
 
 ############################
 # Packages
 ############################
 
-*.7z
-*.csv
-*.dat
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
-*.com
-*.class
-*.dll
-*.exe
-*.o
-*.seed
-*.so
-*.swo
-*.swp
-*.swn
-*.swm
-*.out
-*.pid
+# *.7z
+# *.csv
+# *.dat
+# *.dmg
+# *.gz
+# *.iso
+# *.jar
+# *.rar
+# *.tar
+# *.zip
+# *.com
+# *.class
+# *.dll
+# *.exe
+# *.o
+# *.seed
+# *.so
+# *.swo
+# *.swp
+# *.swn
+# *.swm
+# *.out
+# *.pid
 
 
 ############################
@@ -80,18 +80,18 @@ $RECYCLE.BIN/
 ssl
 .idea
 nbproject
-public/uploads/*
+# public/uploads/*
 !public/uploads/.gitkeep
 
 ############################
 # Node.js
 ############################
 
-lib-cov
-lcov.info
-pids
-logs
-results
+# lib-cov
+# lcov.info
+# pids
+# logs
+# results
 node_modules
 .node_history
 
