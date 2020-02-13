@@ -103,7 +103,7 @@ export default {
         id: this.comment.id,
         text: this.comment.text
       }
-      // console.log(this.comment.text)
+      // console.log(this.comment.id)
       this.$store.dispatch('SET_COMMENT_TEXT_API', data)
       this.$store.dispatch('SET_COMMENT_ID_API', this.comment.id)
       console.log(this.$store.getters.commentId)

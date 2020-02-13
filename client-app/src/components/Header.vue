@@ -3,7 +3,7 @@
        <b-navbar toggleable="lg" type="dark" variant="info">
     <b-navbar-brand to="/">News</b-navbar-brand>
     <span v-if="this.$store.getters.isLoggedIn" class="user-iflogged">Hello, {{ this.$store.getters.userName }}</span>
-
+    <a class="a-userlist" v-if="this.$store.getters.isAdmin" @click="this.goToList">Список пользователей</a>
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
     <b-collapse id="nav-collapse" is-nav>
@@ -54,6 +54,13 @@ export default {
       this.$store.dispatch('logout').then(() => {
         // this.$router.push('/')
       })
+      // console.log(this.$route.name)
+      if (this.$route.name === 'users') {
+        this.$router.push('/')
+      }
+    },
+    goToList () {
+      this.$router.push('/userList')
     }
   },
   created () {
@@ -95,5 +102,12 @@ button.btn {
      background: mix(#50C9BA, black, 95%);
     }
   }
+}
+.a-userlist {
+  color: white;
+  margin-left: 15px;
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
 }
 </style>
