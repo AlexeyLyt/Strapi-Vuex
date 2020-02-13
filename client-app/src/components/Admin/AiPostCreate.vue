@@ -2,7 +2,19 @@
     <div class="block-posts">
     <div class="card-link">
       <article class="blog-card">
-        <img class="post-image" />
+        <div class="post-image">
+          <label>File
+            <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
+          </label>
+          <!-- <div class="preload-img">Selected file: {{ file ? file.name : '' }}</div>
+          <b-form-file
+            class="upload-img"
+            ref="file"
+            v-on:change="handleFileUpload()"
+            placeholder="Choose a file or drop it here..."
+            drop-placeholder="Drop file here..."
+          ></b-form-file> -->
+        </div>
         <div class="article-details">
           <label for="category" class="post-category">Категории поста</label>
           <b-form-input id="category" :state="null" placeholder="Set category"></b-form-input>
@@ -10,14 +22,20 @@
           <label for="title" class="post-title">Заглавие поста</label>
           <b-form-input id="title" :state="null" placeholder="Set post title"></b-form-input>
 
-          <label for="date">Дата поста</label>
-          <!-- <b-form-input id="date" :type="date" placeholder="Set post date"></b-form-input> -->
-          <datepicker></datepicker>
           <p class="post-date"><b-icon icon="calendar-fill"></b-icon> Дата поста </p>
+          <date-picker v-model="time1" valueType="format" :format="momentForamt"></date-picker>
           <p class="post-description"> Описание поста </p>
-          <!-- <b-button :to="{ name: 'post', params: { id: post.id } }" class="post-btn">Read More</b-button>   -->
-          <p class="post-author"><b-icon icon="award"></b-icon> Автор поста </p>
-          <b-button class="post-btn">Создать пост</b-button>
+          <b-form-textarea
+            id="textarea"
+            placeholder="Enter something..."
+            rows="3"
+            max-rows="6"
+          ></b-form-textarea>
+
+          <label for="author" class="post-author"> <b-icon icon="award"></b-icon>Заглавие поста </label>
+          <b-form-input id="author" class="post-author-input" :state="null" placeholder="Set post author"></b-form-input>
+
+          <b-button v-on:click="submitFile()" class="post-btn">Создать пост</b-button>
         </div>
       </article>
     </div>
@@ -25,13 +43,61 @@
 </template>
 
 <script>
-import Datepicker from 'vuejs-datepicker'
+// import Datepicker from 'vuejs-datepicker'
+import DatePicker from 'vue2-datepicker'
+import 'vue2-datepicker/index.css'
+import moment from 'moment'
 export default {
   name: 'Modal_Adaptive',
   components: {
-    Datepicker
+    DatePicker
+  },
+  data () {
+    return {
+      time1: null,
+      file: null,
+      momentForamt: {
+        // Date to String
+        stringify: (date) => {
+          return date ? moment(date).format('MM/DD/YYYY') : ''
+        },
+        // String to Date
+        parse: (value) => {
+          return value ? moment(value, 'MM/DD/YYYY').toDate() : null
+        }
+      }
+    }
   },
   methods: {
+    handleFileUpload () {
+      this.file = this.$refs.file.files[0]
+      console.log(this.file)
+    },
+    submitFile () {
+      let formData = new FormData()
+      formData.append('file', this.file)
+      let el = formData.getAll('file')
+      console.log(el)
+      this.$axios(
+        {
+          url: 'http://localhost:1337/upload',
+          el,
+          headers: {
+            Authorization: `Bearer ${this.$store.getters.token}`,
+            'Content-Type': 'multipart/form-data'
+          },
+          method: 'POST'
+        }
+      )
+        .then(() => {
+          console.log('SUCCESS!!')
+        })
+        .catch(() => {
+          console.log('FAILURE!!')
+        })
+    }
+  },
+  created () {
   }
 }
 </script>
@@ -101,9 +167,21 @@ body {
 
 .post-image {
   transition: opacity 0.3s ease;
-  display: block;
+  display: flex;
+  flex-wrap: wrap;
   width: 100%;
   object-fit: cover;
+  border-right: 1px solid black
+}
+
+.preload-img {
+  width: 100%;
+  height: 90%;
+}
+
+.upload-img {
+  width: 100%;
+  height: 10%;
 }
 
 .article-details {
@@ -126,6 +204,7 @@ body {
 
 .post-description {
   font-family: 'Titillium Web', sans-serif;
+  margin-top: 15px;
 }
 
 .post-title {
@@ -144,9 +223,14 @@ body {
   font-size: 15px;
   font-weight: 700;
   line-height: 1;
-  margin: 1.125rem 0 0 0;
+  // margin: 1.125rem 0 0 0;
+  margin-bottom: 10px;
   padding: 1.125rem 0 0 0;
-  border-top: 0.0625rem solid #ebebeb;
+  // border-top: 0.0625rem solid #ebebeb;
+}
+
+.post-author-input {
+  margin-bottom: 15px;
 }
 
 .post-date {
@@ -154,6 +238,7 @@ body {
   font-size: 15px;
   font-weight: 700;
   line-height: 1;
+  margin-top: 15px;
   // margin: 1.125rem 0 0 0;
   // padding: 1.125rem 0 0 0;
   // border-top: 0.0625rem solid #ebebeb;
