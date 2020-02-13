@@ -76,12 +76,11 @@ export default {
     submitFile () {
       let formData = new FormData()
       formData.append('file', this.file)
-      let el = formData.getAll('file')
-      console.log(el)
+      console.log(formData.getAll('file'))
       this.$axios(
         {
           url: 'http://localhost:1337/upload',
-          el,
+          formData,
           headers: {
             Authorization: `Bearer ${this.$store.getters.token}`,
             'Content-Type': 'multipart/form-data'
