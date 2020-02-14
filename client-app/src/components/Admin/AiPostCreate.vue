@@ -2,9 +2,10 @@
     <div class="block-posts">
     <div class="card-link">
       <article class="blog-card">
+        <form @submit.prevent="sendToStrapi" ref="uploadForm">
         <div class="post-image">
           <label>File
-            <input type="file" id="file" ref="file" v-on:change="handleFileUpload()"/>
+            <input type="file" id="file" ref="file" name="file" v-on:change="handleFileUpload()"/>
           </label>
           <!-- <div class="preload-img">Selected file: {{ file ? file.name : '' }}</div>
           <b-form-file
@@ -17,26 +18,29 @@
         </div>
         <div class="article-details">
           <label for="category" class="post-category">Категории поста</label>
-          <b-form-input id="category" :state="null" placeholder="Set category"></b-form-input>
+          <b-form-input id="category" name="category" :state="null" placeholder="Set category"></b-form-input>
 
-          <label for="title" class="post-title">Заглавие поста</label>
-          <b-form-input id="title" :state="null" placeholder="Set post title"></b-form-input>
+          <label for="name" class="post-title">Заглавие поста</label>
+          <b-form-input id="name" name="name" :state="null" placeholder="Set post title"></b-form-input>
 
           <p class="post-date"><b-icon icon="calendar-fill"></b-icon> Дата поста </p>
-          <date-picker v-model="time1" valueType="format" :format="momentForamt"></date-picker>
+          <date-picker v-model="time1" valueType="format" name="date" :format="momentForamt"></date-picker>
           <p class="post-description"> Описание поста </p>
           <b-form-textarea
             id="textarea"
+            name="description"
             placeholder="Enter something..."
             rows="3"
             max-rows="6"
           ></b-form-textarea>
 
           <label for="author" class="post-author"> <b-icon icon="award"></b-icon>Заглавие поста </label>
-          <b-form-input id="author" class="post-author-input" :state="null" placeholder="Set post author"></b-form-input>
+          <b-form-input id="author" name="author" class="post-author-input" :state="null" placeholder="Set post author"></b-form-input>
 
-          <b-button v-on:click="submitFile()" class="post-btn">Создать пост</b-button>
+          <!-- <b-button v-on:click="submitFile()" class="post-btn">Создать пост</b-button> -->
         </div>
+        <input type="submit" name="Submit">
+        </form>
       </article>
     </div>
   </div>
@@ -94,6 +98,36 @@ export default {
         .catch(() => {
           console.log('FAILURE!!')
         })
+    },
+    sendToStrapi () {
+      let form = this.$refs['uploadForm']
+      let formData = new FormData()
+      let formElements = form.elements
+      let data = {
+        img: {
+          url: ''
+        }
+      }
+      formElements.forEach(currentElement => {
+        if (!['submit', 'file'].includes(currentElement.type)) {
+          data[currentElement.name] = currentElement.value
+        } else if (currentElement.type === 'file') {
+          if (currentElement.files.length === 1) {
+            const file = currentElement.files[0]
+            formData.append(`files.${currentElement.name}`, file, file.name)
+            console.log(file)
+            data.img.url = `/uploads/${file.name}`
+          } else {
+            for (let i = 0; i < currentElement.files.length; i++) {
+              const file = currentElement.files[i]
+              formData.append(`files.${currentElement.name}`, file, file.name)
+            }
+          }
+        }
+      })
+      formData.append('data', JSON.stringify(data))
+      console.log(formData.get('data'))
+      this.$axios({ url: 'http://localhost:1337/posts', data: formData, headers: { Authorization: `Bearer ${this.$store.getters.token}`, 'Content-Type': 'multipart/form-data' }, methods: 'POST' }).then(res => console.log(res))
     }
   },
   created () {
