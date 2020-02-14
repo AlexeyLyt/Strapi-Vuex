@@ -86,8 +86,8 @@ export default new Vuex.Store({
               localStorage.setItem('isAdmin', admin)
               commit('auth_admin', admin)
             }
-            // console.log(resp.data)
-            // console.log(this.getters.isAdmin)
+            console.log(resp.data)
+            console.log(this.getters.isAdmin)
             localStorage.setItem('userName', userName)
             localStorage.setItem('userId', userId)
             localStorage.setItem('token', token)

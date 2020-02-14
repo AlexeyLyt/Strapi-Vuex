@@ -2,7 +2,7 @@
     <div class="block-posts">
     <div class="card-link">
       <article class="blog-card">
-        <form @submit.prevent="sendToStrapi" ref="uploadForm">
+        <!-- <form @submit.prevent="sendToStrapi" ref="uploadForm"> -->
         <div class="post-image">
           <label>File
             <input type="file" id="file" ref="file" name="file" v-on:change="handleFileUpload()"/>
@@ -39,9 +39,14 @@
 
           <!-- <b-button v-on:click="submitFile()" class="post-btn">Создать пост</b-button> -->
         </div>
-        <input type="submit" name="Submit">
-        </form>
+        <!-- <input type="submit" name="Submit"> -->
+        <!-- </form> -->
       </article>
+      <form @submit.prevent="submitFile" ref="uploadForm">
+        <input type="text" name="text">
+        <input type="file" ref='file' v-on:change="handleFileUpload()" name="img">
+        <input type="submit" name="Submit">
+      </form>
     </div>
   </div>
 </template>
@@ -60,6 +65,7 @@ export default {
     return {
       time1: null,
       file: null,
+      // fileApi: {},
       momentForamt: {
         // Date to String
         stringify: (date) => {
@@ -78,56 +84,50 @@ export default {
       console.log(this.file)
     },
     submitFile () {
-      let formData = new FormData()
-      formData.append('file', this.file)
-      console.log(formData.getAll('file'))
-      this.$axios(
-        {
-          url: 'http://localhost:1337/upload',
-          formData,
-          headers: {
-            Authorization: `Bearer ${this.$store.getters.token}`,
-            'Content-Type': 'multipart/form-data'
-          },
-          method: 'POST'
-        }
-      )
-        .then(() => {
-          console.log('SUCCESS!!')
-        })
-        .catch(() => {
-          console.log('FAILURE!!')
-        })
-    },
-    sendToStrapi () {
       let form = this.$refs['uploadForm']
-      let formData = new FormData()
       let formElements = form.elements
-      let data = {
-        img: {
-          url: ''
+      let fileApi = {}
+      let dataD = {
+        'img': {
+          'id': 0
         }
       }
       formElements.forEach(currentElement => {
         if (!['submit', 'file'].includes(currentElement.type)) {
-          data[currentElement.name] = currentElement.value
+          dataD[currentElement.name] = currentElement.value
         } else if (currentElement.type === 'file') {
-          if (currentElement.files.length === 1) {
-            const file = currentElement.files[0]
-            formData.append(`files.${currentElement.name}`, file, file.name)
-            console.log(file)
-            data.img.url = `/uploads/${file.name}`
-          } else {
-            for (let i = 0; i < currentElement.files.length; i++) {
-              const file = currentElement.files[i]
-              formData.append(`files.${currentElement.name}`, file, file.name)
-            }
-          }
+          let formData = new FormData()
+          formData.append('files', this.file)
+          // console.log(formData.getAll('file'))
+          this.$axios({
+            url: 'http://localhost:1337/upload',
+            data: formData,
+            headers: {
+              Authorization: `Bearer ${this.$store.getters.token}`,
+              'Content-Type': 'multipart/form-data'
+            },
+            method: 'POST'
+          }).then((res) => {
+            this.fileApi = res.data[0].id
+            dataD.img.id = this.fileApi
+            console.log(this.fileApi)
+          }).catch(() => {
+            console.log('FAILURE!!')
+          })
         }
       })
-      formData.append('data', JSON.stringify(data))
-      console.log(formData.get('data'))
-      this.$axios({ url: 'http://localhost:1337/posts', data: formData, headers: { Authorization: `Bearer ${this.$store.getters.token}`, 'Content-Type': 'multipart/form-data' }, methods: 'POST' }).then(res => console.log(res))
+      console.log(dataD)
+      this.$axios({
+        url: 'http://localhost:1337/tests',
+        data: dataD,
+        headers: {
+          Authorization: `Bearer ${this.$store.getters.token}`,
+          'Content-Type': 'multipart/form-data'
+        },
+        methods: 'POST'
+      }).then(res => {
+        console.log(res)
+      })
     }
   },
   created () {
