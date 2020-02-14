@@ -94,6 +94,8 @@ export default {
           // this.$router.push('/auth')
           this.$modal.show('example-adaptive')
           this.loading = false
+          this.formData.name = ''
+          this.formData.password = ''
         }, () => {
           console.log(d)
           this.formData.name = ''

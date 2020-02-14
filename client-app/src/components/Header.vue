@@ -3,7 +3,7 @@
        <b-navbar toggleable="lg" type="dark" variant="info">
     <b-navbar-brand to="/">News</b-navbar-brand>
     <span v-if="this.$store.getters.isLoggedIn" class="user-iflogged">Hello, {{ this.$store.getters.userName }}</span>
-    <a class="a-userlist" v-if="this.$store.getters.isAdmin" @click="this.goToList">Список пользователей</a>
+    <a class="a-userlist" v-if="this.$store.getters.isAdmin && this.$route.name !== 'users'" @click="this.goToList">Список пользователей</a>
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
     <b-collapse id="nav-collapse" is-nav>
