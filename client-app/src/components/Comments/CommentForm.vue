@@ -39,7 +39,7 @@ export default {
         .then(response => {
           // success callback
           // fire event for comment
-          console.log(response.data)
+          // console.log(response.data)
           this.$emit('commented', response.data)
           // Clear the message
           this.data.message = ''

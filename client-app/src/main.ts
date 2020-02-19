@@ -7,18 +7,13 @@ import axios from 'axios'
 
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import {
-  BootstrapVue, IconsPlugin, BNavbar, BootstrapVueIcons, ButtonPlugin, BFormInput, FormTextareaPlugin, FormFilePlugin
-} from 'bootstrap-vue'
+import { BootstrapVue, IconsPlugin, BNavbar, BootstrapVueIcons, ButtonPlugin } from 'bootstrap-vue'
 import VModal from 'vue-js-modal' // https://www.npmjs.com/package/vue-js-modal
 import moment from 'moment'
 
-Vue.component('b-form-input', BFormInput)
 Vue.use(VModal)
 Vue.use(BootstrapVueIcons)
-Vue.use(
-  BootstrapVue, BNavbar, IconsPlugin, ButtonPlugin, FormTextareaPlugin, FormFilePlugin
-)
+Vue.use(BootstrapVue, BNavbar, IconsPlugin, ButtonPlugin)
 
 Vue.prototype.moment = moment
 moment.locale('ru')
