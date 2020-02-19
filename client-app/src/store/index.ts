@@ -14,6 +14,7 @@ export default new Vuex.Store({
     users: {},
     comment: '',
     commentId: '',
+    fileId: '',
     token: localStorage.getItem('token') || '',
     userId: localStorage.getItem('userId') || '',
     userName: localStorage.getItem('userName') || '',
@@ -34,6 +35,9 @@ export default new Vuex.Store({
     },
     SET_COMMENTID: (state, payload) => {
       state.commentId = payload
+    },
+    SET_FILEID: (state, payload) => {
+      state.fileId = payload
     },
     auth_request (state) {
       state.status = 'loading'
@@ -71,6 +75,9 @@ export default new Vuex.Store({
     },
     SET_COMMENT_ID_API: async (state, comment) => {
       state.commit('SET_COMMENTID', comment)
+    },
+    SET_FILE_ID_API: async (state, file) => {
+      state.commit('SET_FILEID', file)
     },
     login ({ commit }, user) {
       return new Promise((resolve, reject) => {
@@ -177,6 +184,19 @@ export default new Vuex.Store({
             reject(err)
           })
       })
+    },
+    sendFileToStrapi ({ commit }, file) {
+      return new Promise((resolve, reject) => {
+        commit('auth_request')
+        axios({ url: `http://localhost:1337/upload`, data: file, headers: { Authorization: `Bearer ${this.getters.token}`, 'Content-Type': 'multipart/form-data' }, method: 'POST' })
+          .then(resp => {
+            // console.log(this.getters.comment)
+            resolve(resp)
+          })
+          .catch(err => {
+            reject(err)
+          })
+      })
     }
   },
   modules: {
@@ -194,6 +214,7 @@ export default new Vuex.Store({
     users: state => state.users,
     comment: state => state.comment,
     commentId: state => state.commentId,
-    isAdmin: state => !!state.isAdmin
+    isAdmin: state => !!state.isAdmin,
+    fileId: state => state.fileId
   }
 })

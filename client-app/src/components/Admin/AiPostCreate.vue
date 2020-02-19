@@ -99,35 +99,55 @@ export default {
           let formData = new FormData()
           formData.append('files', this.file)
           // console.log(formData.getAll('file'))
-          this.$axios({
-            url: 'http://localhost:1337/upload',
-            data: formData,
-            headers: {
-              Authorization: `Bearer ${this.$store.getters.token}`,
-              'Content-Type': 'multipart/form-data'
+          this.$store.dispatch('sendFileToStrapi', formData)
+            .then(response => {
+              console.log(response.data)
+              this.$store.dispatch('SET_FILE_ID_API', response.data[0].id)
+              console.log(this.$store.getters.fileId)
+              dataD.img.id = 2
+              // this.$axios({
+              //   url: `http://localhost:1337/upload/files/${response.data[0].id}`,
+              //   headers: {
+              //     Authorization: `Bearer ${this.$store.getters.token}`
+              //   },
+              //   methods: 'GET'
+              // }).then(res => {
+              //   console.log(res)
+              // })
+              this.$axios({
+                url: 'http://localhost:1337/tests',
+                data: dataD,
+                headers: {
+                  Authorization: `Bearer ${this.$store.getters.token}`,
+                  'Content-Type': 'multipart/form-data'
+                },
+                methods: 'POST'
+              }).then(res => {
+                console.log(res)
+              })
             },
-            method: 'POST'
-          }).then((res) => {
-            this.fileApi = res.data[0].id
-            dataD.img.id = this.fileApi
-            console.log(this.fileApi)
-          }).catch(() => {
-            console.log('FAILURE!!')
-          })
+            response => {
+              // error callback
+              this.loading = false
+            })
+          // this.$axios({
+          //   url: 'http://localhost:1337/upload',
+          //   data: formData,
+          //   headers: {
+          //     Authorization: `Bearer ${this.$store.getters.token}`,
+          //     'Content-Type': 'multipart/form-data'
+          //   },
+          //   method: 'POST'
+          // }).then((res) => {
+          //   this.fileApi = res.data[0].id
+          //   dataD.img.id = this.fileApi
+          //   console.log(this.fileApi)
+          // }).catch(() => {
+          //   console.log('FAILURE!!')
+          // })
         }
       })
-      console.log(dataD)
-      this.$axios({
-        url: 'http://localhost:1337/tests',
-        data: dataD,
-        headers: {
-          Authorization: `Bearer ${this.$store.getters.token}`,
-          'Content-Type': 'multipart/form-data'
-        },
-        methods: 'POST'
-      }).then(res => {
-        console.log(res)
-      })
+      // console.log(dataD)
     }
   },
   created () {
