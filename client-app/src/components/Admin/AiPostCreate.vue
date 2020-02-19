@@ -21,7 +21,6 @@
 export default {
   name: 'Modal_Adaptive',
   methods: {
-<<<<<<< HEAD
     handleFileUpload () {
       this.file = this.$refs.file.files[0]
       console.log(this.file)
@@ -94,8 +93,6 @@ export default {
     }
   },
   created () {
-=======
->>>>>>> b33150156605a24df759a8459520b50467e5f0f8
   }
 }
 </script>
