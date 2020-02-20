@@ -2,7 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Public from '../views/Public.vue'
 import postCard from '../views/PostCard.vue'
-import Auth from '../views/Auth.vue'
+// import Auth from '../views/Auth.vue'
+import Test from '../views/Test.vue'
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,11 @@ const routes = [
     path: '/auth',
     name: 'auth',
     component: Public
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: Test
   }
   // {
   //   path: '/about',

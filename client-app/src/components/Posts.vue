@@ -19,8 +19,12 @@
 
 <script>
 /*eslint-disable */
+import LiquorTree from 'liquor-tree'
+import tree from './dataTree'
 export default {
-  components: {},
+  components: {
+    [LiquorTree.name]: LiquorTree
+  },
   data() {
     return {
       posts: [],

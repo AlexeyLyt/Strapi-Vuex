@@ -16,6 +16,7 @@
     "bootstrap-vue": "^2.2.2",
     "core-js": "^3.4.4",
     "jquery": "^3.4.1",
+    "liquor-tree": "^0.2.70",
     "moment": "^2.24.0",
     "vssue": "^1.4.2",
     "vue": "^2.6.11",
